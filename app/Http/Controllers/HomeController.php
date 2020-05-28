@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Product;
-use Illuminate\Http\Request;
 use TCG\Voyager\Models\Category;
 
 class HomeController extends Controller
@@ -32,9 +31,4 @@ class HomeController extends Controller
 
     }
 
-    public function allproducts(Request $request)
-    {
-        $products = Product::take(50)->get();
-        return view('product.all', ['allProducts' => $products]);
-    }
 }

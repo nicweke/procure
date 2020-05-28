@@ -2,154 +2,143 @@
 
 
 @section('content')
-<!-- ========================= SECTION PAGETOP ========================= -->
-<section class="section-pagetop bg">
-    <div class="container">
-        <h2 class="title-page">Shopping cart</h2>
-    </div> <!-- container //  -->
-    </section>
-    <!-- ========================= SECTION INTRO END// ========================= -->
-    
-    <!-- ========================= SECTION CONTENT ========================= -->
-    <section class="section-content padding-y">
-    <div class="container">
-    
-    <div class="row">
-        <main class="col-md-9">
-    <div class="card">
-    
-    <table class="table table-borderless table-shopping-cart">
-    <thead class="text-muted">
-    <tr class="small text-uppercase">
-      <th scope="col">Product</th>
-      <th scope="col" width="120">Quantity</th>
-      <th scope="col" width="120">Price</th>
-      <th scope="col" class="text-right" width="200"> </th>
-    </tr>
-    </thead>
-    <tbody>
-        @foreach ($cartItems as $item)
-    <tr>
-        <td>
-            <figure class="itemside">
-                
-                <figcaption class="info">
-                    <a href="#" class="title text-dark">{{ $item->name }}</a>
-                    <p class="text-muted small">Size: XL, Color: blue, <br> Brand: Gucci</p>
-                </figcaption>
-            </figure>
-        </td>
-        <td> 
-            <form action="{{route('cart.update', $item->id)}}" method="get">
-                <input name="quantity" type="number" value="{{ $item->quantity }}">
+@include('inc.messages')
 
-                <input class="button form-control btn btn-small btn-primary mt-2" type="submit" value="save">
-
-            </form> 
-        </td>
-        <td> 
-            <div class="price-wrap"> 
-                <var class="price">KES {{Cart::session(auth()->id())->get($item->id)->getPriceSum()}} </var> 
-               <!-- <small class="text-muted">KES {{Cart::session(auth()->id())->get($item->id)->getPriceSum()}} </small> -->
-            </div> <!-- price-wrap .// -->
-        </td>
-        <td class="text-right"> 
-        <a data-original-title="Save to Wishlist" title="" href="" class="btn btn-light" data-toggle="tooltip"> <i class="fa fa-heart"></i></a> 
-        <a href="{{ route('cart.destroy', $item->id) }}" class="btn btn-light"> Remove</a>
-        </td>
-    </tr>
-    
-        @endforeach
-    </tbody>
-    </table>
-    
-    <div class="card-body border-top">
-        <a href="{{route('cart.checkout')}}" class="btn btn-primary float-md-right"> Make Purchase <i class="fa fa-chevron-right"></i> </a>
-    <a href="{{route('home')}}" class="btn btn-light"> <i class="fa fa-chevron-left"></i> Continue shopping </a>
-    </div>	
-    </div> <!-- card.// -->
-    
-    <div class="alert alert-success mt-3">
-        <p class="icontext"><i class="icon text-success fa fa-truck"></i> Free Delivery within 1-2 weeks</p>
+<!-- Breadcrumb Area -->
+<section class="breadcrumb-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="breadcrumb-box text-center">
+                    <ul class="list-unstyled list-inline">
+                        <li class="list-inline-item"><a href="{{route('home')}}">Home</a></li>
+                        <li class="list-inline-item"><span>||</span> Shopping Cart</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
-    
-        </main> <!-- col.// -->
-        <aside class="col-md-3">
-            <div class="card mb-3">
-                <div class="card-body">
-                <form>
-                    <div class="form-group">
-                        <label>Have coupon?</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="" placeholder="Coupon code">
-                            <span class="input-group-append"> 
-                                <button class="btn btn-primary">Apply</button>
-                            </span>
-                        </div>
-                    </div>
-                </form>
-                </div> <!-- card-body.// -->
-            </div>  <!-- card .// -->
-            <div class="card">
-                <div class="card-body">
-                        <dl class="dlist-align">
-                          <dt>Total price:</dt>
-                          <dd class="text-right">{{\Cart::session(auth()->id())->getTotal()}}</dd>
-                        </dl>
-                        <dl class="dlist-align">
-                          <dt>Discount:</dt>
-                          <dd class="text-right">0</dd>
-                        </dl>
-                        <dl class="dlist-align">
-                          <dt>Total:</dt>
-                          <dd class="text-right  h5"><strong>{{\Cart::session(auth()->id())->getTotal()}}</strong></dd>
-                        </dl>
-                        <hr>
-                        <p class="text-center mb-3">
-                            <img src="images/payments.png" height="26">
-                        </p>
+</section>
+<!-- End Breadcrumb Area -->
+
+<!-- Shopping Cart -->
+<section class="shopping-cart">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="cart-table table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="t-pro">Product</th>
+                                <th class="t-price">Price</th>
+                                <th class="t-qty">Quantity</th>
+                                <th class="t-total">Total</th>
+                                <th class="t-rem"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($cartItems as $item)
+                            <tr>
+                                <td class="t-pro d-flex">
+                                   
+                                    <div class="t-content">
+                                        <p class="t-heading mb-3"><a href="">{{ $item->name }}</a></p>
+                                        
+                                    </div>
+                                </td>
+                                <td class="t-price">KES {{ $item->price }} </td>
+                                <td class="t-qty">
+                                    <div class="qty-box">
+                                        <div class="quantity buttons_added">
+
+                                            <form action="{{route('cart.update', $item->id)}}" method="get">
+                                                <input name="quantity" type="number" style=" text-align:center;" value="{{ $item->quantity }}">
+
+                                                <input class="btn btn-primary btn-sm" style="border: none"   type="submit" value="save">
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="t-total">{{Cart::session(auth()->id())->get($item->id)->getPriceSum()}}</td>
+                                <td class="t-rem"><a href="{{ route('cart.destroy', $item->id) }}"><i class="far fa-trash-alt"></i></a></td>
+                            </tr>
                         
-                </div> <!-- card-body.// -->
-            </div>  <!-- card .// -->
-        </aside> <!-- col.// -->
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="coupon">
+                    <h6>Discount Coupon</h6>
+                    <p>Enter your coupon code if you have one</p>
+                <form action="{{route('cart.coupon')}}" method="GET">
+                        <input type="text" id="coupon_code" name="coupon_code" value="" placeholder="Your Coupon">
+                        <input class="button" name="apply_coupon"  value="Apply Code" type="submit">
+                    </form>
+
+                    
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="crt-sumry">
+                    <h5>Cart Summary</h5>
+                    <ul class="list-unstyled">
+                        <li>Subtotal <span>KES {{\Cart::session(auth()->id())->getSubTotal()}}</span></li>
+                        <li>Shipping & Tax <span>14% VAT + Shipping</span></li>
+                        <li>Grand Total <span>KES {{\Cart::session(auth()->id())->getTotal()}}</span></li>
+                    </ul>
+                    <div class="cart-btns text-right">
+                        <button onclick="location.href='{{route('product.all')}}'" class="up-cart">Update Cart</button>
+                        <button onclick="location.href='{{route('cart.checkout')}}'" class="chq-out ">Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    </div> <!-- container .//  -->
-    </section>
-    <!-- ========================= SECTION CONTENT END// ========================= -->
-    
-    <!-- ========================= SECTION  ========================= -->
-    <section class="section-name bg padding-y">
+</section>
+<!-- End Shopping Cart -->
+
+<!-- Brand area 2 -->
+<section class="brand2">
     <div class="container">
-    <h6>Payment and refund policy</h6>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    
-    </div><!-- container // -->
-    </section>
-    <!-- ========================= SECTION  END// ========================= -->
-    
-    <!-- ========================= FOOTER ========================= -->
-    <footer class="section-footer border-top padding-y">
-        <div class="container">
-            <p class="float-md-right"> 
-                &copy Copyright 2020 All rights reserved
-            </p>
-            <p>
-                <a href="#">Terms and conditions</a>
-            </p>
-        </div><!-- //container -->
-    </footer>
-    <!-- ========================= FOOTER END // ========================= -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tp-bnd owl-carousel">
+                    <div class="bnd-items">
+                        <a href="#"><img src="{{ asset('images/brand-01.png') }}" alt="" class="img-fluid"></a>
+                    </div>
+                    <div class="bnd-items">
+                        <a href="#"><img src="{{ asset('images/brand-02.png') }}" alt="" class="img-fluid"></a>
+                    </div>
+                    <div class="bnd-items">
+                        <a href="#"><img src="{{ asset('images/brand-03.png') }}" alt="" class="img-fluid"></a>
+                    </div>
+                    <div class="bnd-items">
+                        <a href="#"><img src="{{ asset('images/brand-04.png') }}" alt="" class="img-fluid"></a>
+                    </div>
+                    <div class="bnd-items">
+                        <a href="#"><img src="{{ asset('images/brand-05.png') }}" alt="" class="img-fluid"></a>
+                    </div>
+                    <div class="bnd-items">
+                        <a href="#"><img src="{{ asset('images/brand-06.png') }}" alt="" class="img-fluid"></a>
+                    </div>
+                    <div class="bnd-items">
+                        <a href="#"><img src="{{ asset('images/brand-07.png') }}" alt="" class="img-fluid"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Brand area 2 -->
+
+
+
+
 
 @endsection

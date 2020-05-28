@@ -3,6 +3,8 @@
 namespace App;
 
 use App\Notifications\OTPNotification;
+use App\Order;
+use App\ProductReview;
 use App\Shop;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
@@ -17,7 +19,7 @@ class User extends \TCG\Voyager\Models\User
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'cname', 'password', 'isVerified',
+        'first_name', 'last_name', 'email', 'cname', 'password', 'isVerified',
     ];
 
     /**
@@ -60,5 +62,14 @@ class User extends \TCG\Voyager\Models\User
     public function shop()
     {
         return $this->hasOne(Shop::class);
+    }
+
+    public function review()
+    {
+        return $this->hasOne(ProductReview::class);
+    }
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

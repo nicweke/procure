@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Mail\OTPMail;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Cache;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -21,7 +18,7 @@ class LoginController extends Controller
     | redirecting them to your home screen. The controller uses a trait
     | to conveniently provide its functionality to your applications.
     |
-    */
+     */
 
     use AuthenticatesUsers;
 
@@ -32,7 +29,6 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-
     /**
      * Attempt to log the user into the application.
      *
@@ -41,21 +37,21 @@ class LoginController extends Controller
      */
     protected function attemptLogin(Request $request)
     {
-        
-            $result = $this->guard()->attempt(
+
+        $result = $this->guard()->attempt(
             $this->credentials($request), $request->filled('remember')
         );
 
-        if($request)
-        {
-            
-            auth()->user()->sendOTP(request('via'));
-        }
+        if (!$request) {
 
+            return back()->withErrors('OTP is expired or invalid, request for new OTP');
+
+        }
+        //auth()->user()->sendOTP(request('via'));
         return $result;
     }
 
-      /**
+    /**
      * Log the user out of the application.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -76,13 +72,9 @@ class LoginController extends Controller
         }
 
         return $request->wantsJson()
-            ? new Response('', 204)
-            : redirect('/');
+        ? new Response('', 204)
+        : redirect('/');
     }
-
-
-
-
 
     /**
      * Create a new controller instance.

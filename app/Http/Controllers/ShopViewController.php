@@ -8,7 +8,7 @@ class ShopViewController extends Controller
 {
     public function index()
     {
-        $shopview = Shop::take(10)->get();
+        $shopview = Shop::take(50)->get();
 
         return view('/shopview', ['allShopViews' => $shopview]);
     }

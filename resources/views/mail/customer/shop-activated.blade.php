@@ -1,4 +1,6 @@
 @component('mail::message')
+
+
 # Congratulations
 
 Your Shop is now active.

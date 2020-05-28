@@ -6,20 +6,25 @@
 <div class="container">
 
     
-<!-- ========================= SECTION PAGETOP ========================= -->
-<section class="section-pagetop bg">
+<!-- Breadcrumb Area -->
+<section class="breadcrumb-area">
     <div class="container">
-        <h2 class="title-page" style="text-align:center">Shops</h2>
-        <nav>
-        <ol class="breadcrumb text-white">
-      <!--  <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>-->
-            
-        </ol>  
-        </nav>
-    </div> <!-- container //  -->
-    </section>
-    <!-- ========================= SECTION INTRO END// ========================= -->
-    
+        <div class="row">
+            <div class="col-md-12">
+                <div class="breadcrumb-box text-center">
+                    <ul class="list-unstyled list-inline">
+                        <li class="list-inline-item"><a href="{{ route('home') }}">Home</a></li>
+                        <li class="list-inline-item"><span>||</span> Shops</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Breadcrumb Area -->
+
+
+
     <!-- ========================= SECTION CONTENT ========================= -->
     <section class="section-content padding-y">
     <div class="container">
@@ -41,13 +46,10 @@
         <div class="col-md-3">
             <div class="card">
                 <a href="{{url('shops/'.$shopsview->id)}}"> 
-                    <div>
-                         <img class="card-img-top" src="{{asset('storage/'.$shopsview->cover_img)}}" alt="Card image cap">
+                    <div class="tab-pane fade show active" id="sg1" role="tabpanel">
+                        <img src="{{asset('storage/'.$shopsview->cover_img)}}" alt="" class="img-fluid">
                     </div>
-                    <div class="card-body">
-                       <!-- <h4 class="card-title" style="text-align:center">{{$shopsview->name}}</h4>
-                        <h4 class="card-title">{{$shopsview->rating}}</h4>-->
-                    </div>
+                   
                 </a>
             </div>   
         </div>
@@ -70,19 +72,7 @@
     </section>
     <!-- ========================= SECTION CONTENT END// ========================= -->
     
-    <!-- ========================= FOOTER ========================= -->
-    <footer class="section-footer border-top padding-y">
-        <div class="container">
-            <p class="float-md-right"> 
-                &copy Copyright 2020 All rights reserved
-            </p>
-            <p>
-                <a href="#">Terms and conditions</a>
-            </p>
-        </div><!-- //container -->
-    </footer>
-    <!-- ========================= FOOTER END // ========================= -->
-    
+   
         
 
 

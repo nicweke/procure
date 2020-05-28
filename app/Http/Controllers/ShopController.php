@@ -6,6 +6,7 @@ use App\Mail\ShopActivationRequest;
 use App\Shop;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -47,6 +48,16 @@ class ShopController extends Controller
             'name' => 'required',
             'specialization' => 'required',
             'cover_img' => 'required|file|image|max:5000',
+            'ownername' => 'required',
+            'email' => 'required',
+            'tel' => 'required',
+            'license' => 'required|mimes:pdf|max:5000',
+            'cert' => 'required|mimes:pdf|max:5000',
+            'account_name' => 'required',
+            'account_number' => 'required',
+            'bank_name' => 'required',
+            'branch_name' => 'required',
+
         ]);
 
         //save to DB
@@ -54,6 +65,8 @@ class ShopController extends Controller
 
         if ($request->has('cover_img')) {
             $shop->update(['cover_img' => $request->file('cover_img')->store('uploads', 'public')]);
+            $shop->update(['license' => $request->file('license')->store('uploads', 'public')]);
+            $shop->update(['cert' => $request->file('cert')->store('uploads', 'public')]);
         }
 
         //send email to admin
@@ -111,8 +124,20 @@ class ShopController extends Controller
     {
         //
     }
+    public function intro()
+    {
+        return view('shops.intro');
+    }
     function new () {
         return view('shops.new');
+    }
+    public function profile()
+    {
+        $productDetails = DB::table('shops')
+            ->leftJoin('products', 'shops.id', '=', 'products.shop_id')
+            ->first();
+
+        return view('product.detail', compact('productDetails'));
     }
 
 }
