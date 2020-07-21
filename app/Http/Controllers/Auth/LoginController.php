@@ -35,21 +35,21 @@ class LoginController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
-    protected function attemptLogin(Request $request)
+    /*protected function attemptLogin(Request $request)
     {
 
-        $result = $this->guard()->attempt(
-            $this->credentials($request), $request->filled('remember')
-        );
+    $result = $this->guard()->attempt(
+    $this->credentials($request), $request->filled('remember')
+    );
 
-        if (!$request) {
+    if (!$request) {
 
-            return back()->withErrors('OTP is expired or invalid, request for new OTP');
+    return back()->withErrors('OTP is expired or invalid, request for new OTP');
 
-        }
-        //auth()->user()->sendOTP(request('via'));
-        return $result;
     }
+    //auth()->user()->sendOTP(request('via'));
+    return $result;
+    }*/
 
     /**
      * Log the user out of the application.
@@ -57,24 +57,25 @@ class LoginController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function logout(Request $request)
+
+    /*public function logout(Request $request)
     {
-        auth()->user()->update(['isVerified' => 0]);
+    auth()->user()->update(['isVerified' => 0]);
 
-        $this->guard()->logout();
+    $this->guard()->logout();
 
-        $request->session()->invalidate();
+    $request->session()->invalidate();
 
-        $request->session()->regenerateToken();
+    $request->session()->regenerateToken();
 
-        if ($response = $this->loggedOut($request)) {
-            return $response;
-        }
-
-        return $request->wantsJson()
-        ? new Response('', 204)
-        : redirect('/');
+    if ($response = $this->loggedOut($request)) {
+    return $response;
     }
+
+    return $request->wantsJson()
+    ? new Response('', 204)
+    : redirect('/');
+    }*/
 
     /**
      * Create a new controller instance.

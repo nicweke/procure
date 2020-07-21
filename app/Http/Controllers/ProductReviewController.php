@@ -37,6 +37,9 @@ class ProductReviewController extends Controller
     public function store(Request $request)
     {
         auth()->user()->review()->create($request->all());
+        $productDetails = Product::with('reviews')->find($request->product_id);
+        //dd($productDetails);
+        return view('product.detail', compact('productDetails'));
 
     }
 
@@ -49,7 +52,7 @@ class ProductReviewController extends Controller
     public function show(ProductReview $productReview)
     {
         $productDetails = Product::with('reviews')->find($request->product_id);
-        dd($productDetails);
+        //dd($productDetails);
         return view('product.details', compact('productDetails'));
 
     }

@@ -1,163 +1,107 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Register || Procure</title>
-
-    <!-- Font Icon -->
-    <link rel="stylesheet" href="{{ asset('fonts/material-icon/css/material-design-iconic-font.min.css') }}">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-
-    <!-- Main css -->
-    <link rel="stylesheet" href="{{asset('css/passtrength.css')}}" media="screen" title="no title">
-    <link rel="stylesheet" href="{{ asset('css/register.css') }}">
-
-    
-    
-
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title>{{ config('app.name', 'Laravel') }}</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="css/new/css/my-login.css">
 </head>
-<body>
-<script src="{{ asset('js/assets/vendor/jquery-1.12.4.min.js') }}"></script>
-<script>
-        $("body").on('click', '.toggle-password', function() {
-  $(this).toggleClass("fa-eye fa-eye-slash");
-  var input = $("#password");
-  if (input.attr("type") === "password") {
-    input.attr("type", "text");
-  } else {
-    input.attr("type", "password");
-  }
-
-});
-
-    </script>
-
-
-    <div class="main">
-
-        <!-- Sign up form -->
-        <section class="signup">
-            <div class="container">
-                <div class="signup-content">
-                    <div class="signup-form">
-                        <h2 class="form-title">Sign up</h2>
-                        <form method="POST" action="{{ route('register') }}">
-                            @csrf
-
-                            <div class="form-group">
-                                <label for="first_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-
-                            
-                                <input id="first_name" type="text" class="form-control @error('first_name') is-invalid @enderror" name="first_name" value="{{ old('first_name') }}" required autocomplete="first_name" autofocus placeholder="First Name">
-
-                                @error('first_name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-
-                            <div class="form-group">
-                                <label for="last_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-
-                            
-                                <input id="last_name" type="text" class="form-control @error('last_name') is-invalid @enderror" name="last_name" value="{{ old('last_name') }}" required autocomplete="last_name" autofocus placeholder="Last Name">
-
-                                @error('last_name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="cname"><i class="zmdi zmdi-account material-icons-name"></i></label>
-
-                            
-                                <input id="cname" type="text" class="form-control @error('cname') is-invalid @enderror" name="cname" value="{{ old('cname') }}" required autocomplete="cname" autofocus placeholder="Company Name">
-
-                                @error('cname')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="email"><i class="zmdi zmdi-email"></i></label>
-                            
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Email Address">
-                                <small class="form-text text-muted mt-0">We'll never share your email with anyone else</small> 
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror       
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="password"><i class="zmdi zmdi-lock"></i></label>
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" placeholder="Enter Password" />
-                                <span toggle="#password-field" class="fa fa-fw fa-eye field_icon toggle-password"></span>
+<body class="my-login-page">
+	<section class="h-100">
+		<div class="container h-100">
+			<div class="row justify-content-md-center h-100">
+				<div class="card-wrapper">
+					<div>
+						<img src="{{ asset('images/new/emaillogo.png')}}" alt="" style=" margin-top: 50px;margin-bottom:25px; position:relative; left:90px;">
+					</div>
+					<div class="card fat">
+						<div class="card-body">
+							<h4 class="card-title text-center">Register</h4>
+                            <form method="POST" class="my-login-validation" novalidate="" action="{{ route('register') }}">
+                                @csrf
+								<div class="form-group">
+									<label for="name">First Name</label>
+									<input id="first_name" type="text" class="form-control @error('first_name') is-invalid @enderror" name="first_name" value="{{ old('first_name') }}" required autocomplete="first_name" autofocus placeholder="First Name">
+									<div class="invalid-feedback">
+										What's your first name?
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="name">Last Name</label>
+									<input id="last_name" type="text" class="form-control @error('last_name') is-invalid @enderror" name="last_name" value="{{ old('last_name') }}" required autocomplete="last_name" autofocus placeholder="Last Name">
+									<div class="invalid-feedback">
+										What's your last name?
+									</div>
+                                </div>
                                 
-                                 
+                                <div class="form-group">
+									<label for="cname">Company Name</label>
+									<input id="cname" type="text" class="form-control @error('cname') is-invalid @enderror" name="cname" value="{{ old('cname') }}" required autocomplete="cname" autofocus placeholder="Company Name">
+									<div class="invalid-feedback">
+										Your company name is invalid
+									</div>
+								</div>
 
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+								<div class="form-group">
+									<label for="email">E-Mail Address</label>
+									<input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Email Address">
+									<div class="invalid-feedback">
+										Your email is invalid
+									</div>
+								</div>
 
+								<div class="form-group">
+									<label for="password">Password</label>
+									<input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="new-password" placeholder="Enter Password" required data-eye>
+									<div class="invalid-feedback">
+										Password is required
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="password-confirm"> Confirm Password</label>
+									<input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password" placeholder="Confirm Password">
+									
+								</div>
 
-                            <div class="form-group">
-                               
-                                <label for="password-confirm"><i class="zmdi zmdi-lock-outline"></i></label>
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password" placeholder="Confirm Password">
-                            </div>
+								<div class="form-group">
+									<div class="custom-checkbox custom-control">
+										<input type="checkbox" name="agree" id="agree" class="custom-control-input" required="">
+										<label for="agree" class="custom-control-label">I agree to the <a href="{{ url('/terms') }}">Terms and Conditions</a></label>
+										<div class="invalid-feedback">
+											You must agree with our Terms and Conditions
+										</div>
+									</div>
+								</div>
 
+								<div class="form-group m-0">
+									<button type="submit" class="btn btn-primary btn-block" style="background-color: #fcb800; color: #000; border:none;">
+										<b>Register</b>
+									</button>
+								</div>
+								<div class="mt-4 text-center">
+                                Already have an account? <a href="{{route('login')}}">Login</a>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="footer">
+						Copyright &copy; 2020 &mdash; Procure 
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
-
-                            <div class="form-group">
-                                <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" required/>
-                            <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in  <a href="{{ url('/terms') }}" class="term-service">Terms of service</a></label>
-                            @error('agree-term')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-
-                            <div class="form-group form-button">
-                                
-                                <input type="submit" name="signup" id="signup" class="form-submit" value="Register"/>
-                                
-                            </div>
-                        </form>
-                    </div>
-                    <div class="signup-image">
-                        <figure><img class="mr-7" src="{{asset('images/register.jpg')}}" alt="sing up image"></figure>
-                        <a href="{{route('login')}}" class="signup-image-link">I am already member</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-
-    </div>
-
-
-    <!-- JS -->
-    <!--Jquery-->
-    <script src="{{ asset('js/assets/vendor/jquery-1.12.4.min.js') }}"></script>  
-    <script src=" {{asset('js/passtrength.js')}}"></script>
-    <script src=" {{ asset('js/register.js') }}"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script src="js/new/js/my-login.js"></script>
 </body>
 </html>

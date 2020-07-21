@@ -50,7 +50,7 @@ class ShopController extends Controller
             'cover_img' => 'required|file|image|max:5000',
             'ownername' => 'required',
             'email' => 'required',
-            'tel' => 'required',
+            'tel' => 'required|regex:/(01)[0-9]{9}/',
             'license' => 'required|mimes:pdf|max:5000',
             'cert' => 'required|mimes:pdf|max:5000',
             'account_name' => 'required',

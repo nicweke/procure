@@ -2,141 +2,133 @@
 
 
 @section('content')
+
 @include('inc.messages')
 
-<!-- Breadcrumb Area -->
-<section class="breadcrumb-area">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="breadcrumb-box text-center">
-                    <ul class="list-unstyled list-inline">
-                        <li class="list-inline-item"><a href="{{route('home')}}">Home</a></li>
-                        <li class="list-inline-item"><span>||</span> Shopping Cart</li>
-                    </ul>
-                </div>
-            </div>
+<div class="ps-page--simple">
+    <div class="ps-breadcrumb">
+        <div class="container">
+            <ul class="breadcrumb">
+                @foreach (Breadcrumbs::current() as $crumbs)
+                @if ($crumbs->url() && !$loop->last)
+                    <li class="breadcrumb-item">
+                        <a href="{{ $crumbs->url() }}">
+                            {{ $crumbs->title() }}
+                        </a>
+                    </li>
+                @else
+                    <li class="breadcrumb-item active">
+                        {{ $crumbs->title() }}
+                    </li>
+                @endif
+            @endforeach
         </div>
     </div>
-</section>
-<!-- End Breadcrumb Area -->
-
-<!-- Shopping Cart -->
-<section class="shopping-cart">
-    <div class="container">
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="cart-table table-responsive">
-                    <table class="table">
+    <div class="ps-section--shopping ps-shopping-cart">
+        <div class="container">
+            <div class="ps-section__header">
+                <h1>Shopping Cart</h1>
+            </div>
+            <div class="ps-section__content">
+                <div class="table-responsive">
+                    <table class="table ps-table--shopping-cart">
                         <thead>
                             <tr>
-                                <th class="t-pro">Product</th>
-                                <th class="t-price">Price</th>
-                                <th class="t-qty">Quantity</th>
-                                <th class="t-total">Total</th>
-                                <th class="t-rem"></th>
+                                <th>PRODUCT</th>
+                                <th>PRICE</th>
+                                <th>QUANTITY</th>
+                                <th>TOTAL</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
+                            <?php if($cartItems->isEmpty()) { ?>
+                                <h3 style="position: relative;left:490px;top:130px;">No Items In Cart</h3>
+                            <?php } else { ?>
                             @foreach ($cartItems as $item)
                             <tr>
-                                <td class="t-pro d-flex">
-                                   
-                                    <div class="t-content">
-                                        <p class="t-heading mb-3"><a href="">{{ $item->name }}</a></p>
-                                        
-                                    </div>
-                                </td>
-                                <td class="t-price">KES {{ $item->price }} </td>
-                                <td class="t-qty">
-                                    <div class="qty-box">
-                                        <div class="quantity buttons_added">
-
-                                            <form action="{{route('cart.update', $item->id)}}" method="get">
-                                                <input name="quantity" type="number" style=" text-align:center;" value="{{ $item->quantity }}">
-
-                                                <input class="btn btn-primary btn-sm" style="border: none"   type="submit" value="save">
-
-                                            </form>
+                                <td>
+                                    <div class="ps-product--cart">
+                                  
+                                        <div class="ps-product__content" style="margin-left:0px;"><p style="font-size: 16px;">{{ $item->name }}</p>
+                                           
                                         </div>
                                     </div>
                                 </td>
-                                <td class="t-total">{{Cart::session(auth()->id())->get($item->id)->getPriceSum()}}</td>
-                                <td class="t-rem"><a href="{{ route('cart.destroy', $item->id) }}"><i class="far fa-trash-alt"></i></a></td>
+                                <td class="price" style="position: relative; left:30px;">KES {{ $item->price }}</td>
+                                <td style="position: relative; left:90px;">
+                                    <form action="{{route('cart.update', $item->id)}}" method="get">
+                                        <input name="quantity" type="number" style=" text-align:center;" value="{{ $item->quantity }}">
+
+                                        <input class="btn btn-primary btn-sm" style="border: none"   type="submit" value="save">
+
+                                    </form>
+                                </td>
+                                <td style="position: relative; left:40px;">{{Cart::session(auth()->id())->get($item->id)->getPriceSum()}}</td>
+                                <td><a href="{{ route('cart.destroy', $item->id) }}"><i class="far fa-trash-alt"></i></a></td>
                             </tr>
-                        
-                            @endforeach
+                            @endforeach 
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>
+                <div class="ps-section__cart-actions" style="padding-top:120px"><a class="ps-btn" href="{{route('product.all')}}"><i class="fas fa-arrow-left"></i> Update Cart</a><a class="ps-btn ps-btn--outline" href="{{route('approval')}}"><i class="far fa-file-alt"></i>Request Approval</a></div>
             </div>
-            
-            <div class="col-md-4">
-                <div class="coupon">
-                    <h6>Discount Coupon</h6>
-                    <p>Enter your coupon code if you have one</p>
-                <form action="{{route('cart.coupon')}}" method="GET">
-                        <input type="text" id="coupon_code" name="coupon_code" value="" placeholder="Your Coupon">
-                        <input class="button" name="apply_coupon"  value="Apply Code" type="submit">
-                    </form>
-
-                    
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="crt-sumry">
-                    <h5>Cart Summary</h5>
-                    <ul class="list-unstyled">
-                        <li>Subtotal <span>KES {{\Cart::session(auth()->id())->getSubTotal()}}</span></li>
-                        <li>Shipping & Tax <span>14% VAT + Shipping</span></li>
-                        <li>Grand Total <span>KES {{\Cart::session(auth()->id())->getTotal()}}</span></li>
-                    </ul>
-                    <div class="cart-btns text-right">
-                        <button onclick="location.href='{{route('product.all')}}'" class="up-cart">Update Cart</button>
-                        <button onclick="location.href='{{route('cart.checkout')}}'" class="chq-out ">Checkout</button>
+            <div class="ps-section__footer">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+                        <figure>
+                            <figcaption>Coupon Discount &nbsp;<i class="fas fa-caret-down"></i></figcaption>
+                            
+                            <p>Enter your coupon code if you have one</p>
+                            <form action="{{route('cart.coupon')}}" method="GET">
+                                <div class="form-group">
+                                    <input type="text" id="coupon_code" name="coupon_code" value="" placeholder="Your Coupon">
+                                    <input class="button" name="apply_coupon"  value="Apply Code" type="submit">
+                                </div>          
+                            </form>
+                        </figure>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- End Shopping Cart -->
-
-<!-- Brand area 2 -->
-<section class="brand2">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="tp-bnd owl-carousel">
-                    <div class="bnd-items">
-                        <a href="#"><img src="{{ asset('images/brand-01.png') }}" alt="" class="img-fluid"></a>
-                    </div>
-                    <div class="bnd-items">
-                        <a href="#"><img src="{{ asset('images/brand-02.png') }}" alt="" class="img-fluid"></a>
-                    </div>
-                    <div class="bnd-items">
-                        <a href="#"><img src="{{ asset('images/brand-03.png') }}" alt="" class="img-fluid"></a>
-                    </div>
-                    <div class="bnd-items">
-                        <a href="#"><img src="{{ asset('images/brand-04.png') }}" alt="" class="img-fluid"></a>
-                    </div>
-                    <div class="bnd-items">
-                        <a href="#"><img src="{{ asset('images/brand-05.png') }}" alt="" class="img-fluid"></a>
-                    </div>
-                    <div class="bnd-items">
-                        <a href="#"><img src="{{ asset('images/brand-06.png') }}" alt="" class="img-fluid"></a>
-                    </div>
-                    <div class="bnd-items">
-                        <a href="#"><img src="{{ asset('images/brand-07.png') }}" alt="" class="img-fluid"></a>
+                    <!--<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+                        <figure>
+                            <figcaption>Calculate shipping&nbsp;<i class="fas fa-caret-down"></i></figcaption>
+                            <div class="form-group">
+                                <select class="ps-select">
+                                    <option value="1">America</option>
+                                    <option value="2">Italia</option>
+                                    <option value="3">Vietnam</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="text" placeholder="Town/City">
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="text" placeholder="Postcode/Zip">
+                            </div>
+                            <div class="form-group">
+                                <button class="ps-btn ps-btn--outline">Update</button>
+                            </div>
+                        </figure>
+                    </div>-->
+                    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+                        <div class="ps-block--shopping-total">
+                            <div class="ps-block__header">
+                                <p>Subtotal <span> KES {{\Cart::session(auth()->id())->getSubTotal()}}</span></p>
+                            </div>
+                            <div class="ps-block__content">
+                                <ul class="ps-block__product">
+                                    <li><span class="ps-block__shop">Shipping:</span><span class="ps-block__shipping">Procure Express Shpping</span><!--<span class="ps-block__estimate">Estimate for <strong>Viet Nam</strong><a href="#"> MVMTH Classical Leather Watch In Black ×1</a></span>--></li>
+                                    
+                                </ul>
+                                <h3>Total <span>KES {{\Cart::session(auth()->id())->getTotal()}}</span></h3>
+                            </div>
+                        </div><a class="ps-btn ps-btn--fullwidth" href="{{route('cart.checkout')}}">Proceed to checkout</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
-<!-- End Brand area 2 -->
-
+</div>
 
 
 

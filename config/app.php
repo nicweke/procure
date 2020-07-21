@@ -56,6 +56,10 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
+    // stripe key and secret
+    'stripe_key' => env('STRIPE_KEY', 'STRIPE_KEY'),
+    'stripe_secret' => env('STRIPE_SECRET', 'STRIPE_SECRET'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

@@ -2,12 +2,11 @@
 
 namespace App\Providers;
 
-use App\Shop;
 use App\Category;
 use App\Observers\ShopObserver;
-use TCG\Voyager\Facades\Voyager;
+use App\Shop;
 use Illuminate\Support\ServiceProvider;
-
+use TCG\Voyager\Facades\Voyager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,5 +28,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Shop::observe(ShopObserver::class);
+        require base_path('routes/breadcrumbs.php');
+
     }
 }

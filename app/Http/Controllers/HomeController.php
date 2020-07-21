@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Product;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use TCG\Voyager\Models\Category;
 
 class HomeController extends Controller
 {
+    use AuthenticatesUsers;
     /**
      * Create a new controller instance.
      *
@@ -14,7 +16,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'verified']);
     }
 
     /**
@@ -28,7 +30,5 @@ class HomeController extends Controller
         $categories = Category::whereNull('parent_id')->get();
 
         return view('home', ['allProducts' => $products, 'categories' => $categories]);
-
     }
-
 }

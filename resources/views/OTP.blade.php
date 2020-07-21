@@ -1,9 +1,13 @@
 @component('mail::message')
-# OTP verification
+# Verify Your Login
 
 Hello,
 
-Your OTP code is <strong>{{$OTP}}</strong>
+Below is your One Time Passcode:
+
+<strong>{{$OTP}}</strong>
+
+Incase of any issues or concerns, kindly send an email to support@procure.com, we will get back to you.
 
 
 Thanks,<br>

@@ -1,0 +1,150 @@
+body:not(.zoom-off) .bnr.bnr-hover-scale>img {
+    width: calc(100% + 1px);
+    vertical-align: top;
+    transform: scale(1.1) rotate(0.001deg);
+    transition: 0.5s;
+}
+
+body:not(.zoom-off) .bnr.bnr-hover-scale :hover>img {
+    transform: scale(1.01) rotate(0.01deg);
+}
+
+.bnr img {
+    width: 100%;
+}
+
+img.lazyloaded {
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+img {
+    vertical-align: middle;
+    border-style: none;
+}
+
+.bnr.bnr--left {
+    text-align: left;
+}
+
+.bnr {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+    font-size: 100px;
+    text-decoration: none;
+}
+
+.bnr .bnr-text-wrap {
+    position: relative;
+    z-index: 1;
+}
+
+.bnr.bnr--style-1 .bnr-caption {
+    padding: 5% 10.5%;
+
+}
+
+.bnr.bnr--style-1 .bnr-caption .bnr-text1 {
+    margin-top: 1em;
+    font-size: .14em;
+    line-height: 1em;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2.6px;
+    color: #000;
+}
+
+.bnr .bnr-text-wrap>span[class*="text"] {
+    display: block;
+}
+
+.bnr .bnr-text-wrap>*:first-child {
+    margin-top: 0 !important;
+}
+
+.bnr.bnr--style-1 .bnr-caption .bnr-text2 {
+    margin-top: .25em;
+    font-size: .48em;
+    line-height: 1em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #000;
+}
+
+.bnr .btn-decor {
+    margin-top: .55em;
+    padding: .55em 0 .417em;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    line-height: 1em;
+
+    color: inherit;
+}
+
+.btn-decor,
+.btn-decor:focus {
+    color: #000;
+    background: none;
+    outline: none;
+    text-decoration: none;
+}
+
+.btn-decor {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 0 0 10px;
+    font-size: 14px;
+    line-height: 1em;
+
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid black;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    color: #000;
+
+}
+
+
+.bnr[data-fontratio]:not(.fontratio-calc) .bnr-caption {
+    opacity: 0;
+}
+
+.bnr .bnr-text-wrap {
+    position: relative;
+    z-index: 1;
+}
+
+.bnr .bnr-text-wrap>span[class*="text"] {
+    display: block;
+}
+
+.bnr .bnr-btn-wrap {
+    color: inherit;
+    text-decoration: none;
+}
+
+.bnr .btn-decor {
+    margin-top: .55em;
+    padding: .55em 0 .417em;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    line-height: 1em;
+
+    color: inherit;
+}
+
+.bnr .btn-decor:hover,
+.bnr .btn-decor:focus {
+    color: inherit;
+}

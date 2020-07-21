@@ -6,10 +6,12 @@ use App\Notifications\OTPNotification;
 use App\Order;
 use App\ProductReview;
 use App\Shop;
+use App\TrackOrder;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
 
-class User extends \TCG\Voyager\Models\User
+class User extends \TCG\Voyager\Models\User implements MustVerifyEmail
 {
     use Notifiable;
 
@@ -72,4 +74,9 @@ class User extends \TCG\Voyager\Models\User
     {
         return $this->hasMany(Order::class);
     }
+    public function trackorder()
+    {
+        return $this->hasMany(TrackOrder::class);
+    }
+
 }

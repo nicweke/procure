@@ -33,7 +33,7 @@ class ProductController extends Controller
 
             $products = $category->allProducts();
         } else {
-            $products = Product::take(10)->get();
+            $products = Product::get();
         }
 
         return view('product.index', compact('products', 'categoryName'));
@@ -41,9 +41,14 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
+        $request->validate([
+            'query' => 'required|min:3',
+        ]);
+
         $query = $request->input('query');
 
-        $products = Product::where('name', 'LIKE', "%$query%")->paginate(10);
+        //$products = Product::where('name', 'LIKE', "%$query%")->paginate(10);
+        $products = Product::search($query)->paginate(10);
 
         return view('product.catalog', compact('products'));
 
@@ -52,8 +57,10 @@ class ProductController extends Controller
     public function product($id)
     {
         $productDetails = Product::where('id', $id)->first();
+        $categories = Category::whereNull('parent_id')->first();
 
-        return view('product.detail')->with(compact('productDetails'));
+        //return view('product.detail')->with(compact('productDetails'));
+        return view('product.detail', ['productDetails' => $productDetails, 'categories' => $categories]);
 
     }
 
@@ -90,55 +97,39 @@ class ProductController extends Controller
 
             $products = DB::table('products')
                 ->where('price', '>=', $start)->where('price', '<=', $end)->orderby('price', 'ASC')->paginate(6);
+
+            $categories = Category::whereNull('parent_id')->get();
             //dd($products);
             response()->json($products); //return to ajax
-            return view('product.all', ['allProducts' => $products]);
+            response()->json($categories); //return to ajax
+            return view('product.product', ['allProducts' => $products]);
 
         } else if (isset($request->brand)) {
 
             $brand = $request->brand; //brand
 
             $products = DB::table('products')->whereIN('brand', explode(',', $brand))->paginate(6);
+            $categories = Category::whereNull('parent_id')->get();
             //dd($products);
             response()->json($products); //return to ajax
-            return view('product.all', ['allProducts' => $products]);
+            response()->json($categories); //return to ajax
+            return view('product.product', ['allProducts' => $products]);
+
+        } else if ($request->ajax() && !isset($request->brand)) {
+
+            /*$refreshAfter = 2;
+            //Send a Refresh header to the browser.
+            header('Refresh: ' . $refreshAfter);
+            return view('product.all', ['allProducts' => $products]);*/
+            echo "<h1>No Products Selected!</h1>";
 
         } else {
 
-            $products = Product::take(50)->paginate(10);
+            $products = DB::table('products')->paginate(12);
             $categories = Category::whereNull('parent_id')->get();
-
             return view('product.all', ['allProducts' => $products, 'categories' => $categories]);
-
         }
+
     }
-
-    /*
-public function filter(Request $request)
-{
-
-$data = $request->all();
-echo "<pre>";
-print_r($data);die;
-
-$brandUrl = "";
-if (!empty($data['brandFilter'])) {
-foreach ($data['brandFilter'] as $brand) {
-if (empty($brandUrl)) {
-$brandUrl = "&brand=" . $brand;
-} else {
-$brandUrl .= "-" . $brand;
-}
-}
-}
-//$finalUrl = "products/" . $data['url'] . "?" . $brandUrl;
-//return redirect::to($finalUrl);
-
-/* if (array_key_exists('url', $data)) {
-$finalUrl = "products/" . $data['url'] . "?" . $brandUrl;
-} else {
-$finalUrl = 'product/all'; // change your default url if there isn't rul in your `$data` array.
-
-}     }*/
 
 }

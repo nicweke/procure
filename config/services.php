@@ -12,7 +12,7 @@ return [
     | location for this type of information, allowing packages to have
     | a conventional file to locate the various service credentials.
     |
-    */
+     */
 
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
@@ -35,6 +35,11 @@ return [
         'auth_token' => env('ZDlhNjE0ZWIxMGZhYzY1NGNiMDJiNzNmOGZiMzBl'),
         // Country code, area code and number without symbols or spaces
         'from_number' => env('+254705914174'),
+    ],
+    'stripe' => [
+        'model' => App\User::class,
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
     ],
 
 ];

@@ -1,10 +1,13 @@
 @extends('layouts.front')
 
 @section('content')
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script>
+
+
+
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
 
     $(function () {
         $("#slider-range").slider({
@@ -39,7 +42,15 @@
 
                     brand.push($(this).val());
                 }
+               /* else {
+                    location.reload();
+
+                }*/   
+                
+                
+                
             });
+
             Finalbrand  = brand.toString();
 
             $.ajax({
@@ -51,6 +62,7 @@
                         console.log(response);
                         $('#updateDiv').html(response);
                     }
+                   
                 });
 
         });
@@ -61,413 +73,271 @@
 
 
 
-        <!-- Breadcrumb Area -->
-        <section class="breadcrumb-area">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="breadcrumb-box text-center">
-                            <ul class="list-unstyled list-inline">
-                                <li class="list-inline-item"><a href="{{route('home') }}">Home</a></li>
-                                <li class="list-inline-item"><span>||</span>PRODUCTS</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- End Breadcrumb Area -->
+<div class="ps-breadcrumb">
+    <div class="ps-container">
+        <ul class="breadcrumb">
+            @foreach (Breadcrumbs::current() as $crumbs)
+                @if ($crumbs->url() && !$loop->last)
+                    <li class="breadcrumb-item">
+                        <a href="{{ $crumbs->url() }}">
+                            {{ $crumbs->title() }}
+                        </a>
+                    </li>
+                @else
+                    <li class="breadcrumb-item active">
+                        {{ $crumbs->title() }}
+                    </li>
+                @endif
+            @endforeach
+        </ul>
+    </div>
+</div>
 
-        <!-- Category Area -->
-        <section class="category">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="category-box">
-                            <div class="sec-title">
-                                <h6>Categories</h6>
-                            </div>
-                            <!-- accordion -->
-                            <div id="accordion">
+
+
+
+
+    <div class="ps-page--shop" id="shop-sidebar">
+        <div class="container">
+            <div class="ps-layout--shop">
+                <div class="ps-layout__left">
+                    <aside class="widget widget_shop">
+                        <h4 class="widget-title">Categories</h4>
+                        <ul class="ps-list--categories">
+                            @foreach($categories as $category)
                             
-                                <div class="card">
-                                        <div class="card-header">
-                                            <ul class="menu-category" style="list-style-type: none">
-                                                @foreach($categories as $category)
-                                                    <li class="has-submenu">
-                                                    <a href="{{route('products.index', ['category_id' => $category->id])}}" style="line-height: 27px;"><span>{{$category->name}}<i
-                                                                class="pe-7s-angle-right"></span></i></a>
-                                    
-                                                                @php
-                                                                    $children = TCG\Voyager\Models\Category::where('parent_id', $category->id)->get();
-                                                                @endphp
-                                    
-                                                           @if($children->isNotEmpty())
-                                                            <div class="category-menu-dropdown">
-                                    
-                                                                @foreach ($children as $child)
-                                                                    <div class="category-dropdown-style category-common3">
-                                                                        <div class="submenu" style="display: none;">
-                                                                            <a href="{{route('products.index', ['category_id' => $child->id])}}">
-                                                                            {{$child->name}}
-                                                                            </a>
-                                                                        </div>
-                                                                        @php
-                                                                            $grandChild = TCG\Voyager\Models\Category::where('parent_id', $child->id)->get();
-                                                                        @endphp
-                                                                        @if($grandChild->isNotEmpty())
-                                                                            <ul class="submenu" style="list-style-type: none; display:none;">
-                                                                                @foreach ($grandChild as $c)
-                                                                                    <li class="has-submenu"><a href="{{route('products.index', ['category_id' => $c->id])}}">{{$c->name}}</a></li>
-                                                                                @endforeach
-                                                                            </ul>
-                                                                        @endif
-                                                                    </div>
-                                                                @endforeach
-                                    
-                                    
-                                                            </div>
-                                    
-                                                          @endif
-                                                    </li>
-                                    
-                                                @endforeach
-                                    
-                                            </ul> 
-                                    
-                                            
+                            <li class="current-menu-item menu-item-has-children">
+                            <a href="{{route('products.index', ['category_id' => $category->id])}}" style="line-height: 27px;">{{$category->name}}{{--<span class="sub-toggle"><i class="fas fa-angle-down"></i></span>--}}
+                                @php
+                                $children = TCG\Voyager\Models\Category::where('parent_id', $category->id)->get();
+                            @endphp
 
-                                        </div>
-                         
-                                </div>
-                                <div class="card" style="display: none">
-                                    <div class="card-header">
-                                        <a href="" data-toggle="collapse" data-target="#collapse3">
-                                            <span>Home Appliance</span>
-                                            <i class="fa fa-angle-down"></i>
-                                        </a>
-                                    </div>
-                                    <div id="collapse3" class="collapse">
-                                        <div class="card-body">
-                                            <ul class="list-unstyled">
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 1</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 2</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 3</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 4</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card" style="display: none">
-                                    <div class="card-header">
-                                        <a href="" data-toggle="collapse" data-target="#collapse4">
-                                            <span>Smartphone</span>
-                                            <i class="fa fa-angle-down"></i>
-                                        </a>
-                                    </div>
-                                    <div id="collapse4" class="collapse">
-                                        <div class="card-body">
-                                            <ul class="list-unstyled">
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 1</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 2</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 3</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 4</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card" style="display: none">
-                                    <div class="card-header">
-                                        <a href="" data-toggle="collapse" data-target="#collapse5">
-                                            <span>Computer</span>
-                                            <i class="fa fa-angle-down"></i>
-                                        </a>
-                                    </div>
-                                    <div id="collapse5" class="collapse">
-                                        <div class="card-body">
-                                            <ul class="list-unstyled">
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 1</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 2</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 3</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 4</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card" style="display: none">
-                                    <div class="card-header">
-                                        <a href="" data-toggle="collapse" data-target="#collapse6">
-                                            <span>Kids Collection</span>
-                                            <i class="fa fa-angle-down"></i>
-                                        </a>
-                                    </div>
-                                    <div id="collapse6" class="collapse">
-                                        <div class="card-body">
-                                            <ul class="list-unstyled">
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 1</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 2</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 3</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 4</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card" style="display: none">
-                                    <div class="card-header">
-                                        <a href="" data-toggle="collapse" data-target="#collapse7">
-                                            <span>Automobile</span>
-                                            <i class="fa fa-angle-down"></i>
-                                        </a>
-                                    </div>
-                                    <div id="collapse7" class="collapse">
-                                        <div class="card-body">
-                                            <ul class="list-unstyled">
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 1</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 2</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 3</a></li>
-                                                <li><a href=""><i class="fa fa-angle-right"></i> Catagory 4</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                       {{--@if($children->isNotEmpty())
+                        <div class="category-menu-dropdown">
+
+                            @foreach ($children as $child)
+                                <!--<div class="category-dropdown-style category-common3">-->
+                                    <ul class="submenu">
+                                        <li class="current-menu-item"><a href="{{route('products.index', ['category_id' => $child->id])}}">
+                                        {{$child->name}}
+                                        </a></li>
+                                    </ul>
+                                <!--</div>-->
+                            @endforeach
+                        </div>
+                        @endif--}}          
+                            </li>
+                            @endforeach
+                        </ul>
+                    </aside>
+
+                    <aside class="widget widget_shop">
+                        <h4 class="widget-title">BY BRANDS</h4>
+                        <!--<form class="ps-form--widget-search" action="do_action" method="get">
+                            <input class="form-control" type="text" placeholder="">
+                            <button><i class="icon-magnifier"></i></button>
+                        </form>-->
+
+                        <figure class="ps-custom-scrollbar" data-height="250">
+                            
+                               <?php use App\Product; ?>
+                               <?php $brands = Product::select('brand')->groupBy('brand')->get(); ?>
+
+                               @foreach ($brands as $brand )
+
+                               <ul class="list-unstyled" style="line-height: 2; cursor:pointer;">   
+                                   <li><input  id="brand" class="try" value="{{ $brand->brand}}"  class="try" type="checkbox">&nbsp;&nbsp;<span>{{ ucwords($brand->brand) }}</span>&nbsp;&nbsp;({{App\Product::where('brand',$brand->brand)->count()}})</li>  
+                               </ul>
+
+                                @endforeach
+
+                        </figure>
+                        <figure>
+                            <h4 class="widget-title">By Price</h4>
+                            <div class="ps-slider" data-default-min="13" data-default-max="1300" data-max="1311" data-step="100" data-unit="$"></div>
+                            <p class="ps-slider__meta">Price:<span class="ps-slider__value ps-slider__min"></span>-<span class="ps-slider__value ps-slider__max"></span></p>
+
+                            <!--<div id="slider-range"></div>
+                                    <b><input size="2" type="text" id="amount_start" name="start_price" value="15" readonly="readonly"></b>
+                                    <b><input size="2" type="text" id="amount_end" name="end_price" value="65" readonly="readonly"></b>-->
+
+
+                        </figure>
+                        <figure>
+                            <h4 class="widget-title">By Price</h4>
+                            <div class="ps-checkbox">
+                                <input class="form-control" type="checkbox" id="review-1" name="review">
+                                <label for="review-1"><span><i class="fa fa-star rate"></i><i class="fa fa-star rate"></i><i class="fa fa-star rate"></i><i class="fa fa-star rate"></i><i class="fa fa-star rate"></i></span><small>(13)</small></label>
+                            </div>
+                            <div class="ps-checkbox">
+                                <input class="form-control" type="checkbox" id="review-2" name="review">
+                                <label for="review-2"><span><i class="fa fa-star rate"></i><i class="fa fa-star rate"></i><i class="fa fa-star rate"></i><i class="fa fa-star rate"></i><i class="fa fa-star"></i></span><small>(13)</small></label>
+                            </div>
+                            <div class="ps-checkbox">
+                                <input class="form-control" type="checkbox" id="review-3" name="review">
+                                <label for="review-3"><span><i class="fa fa-star rate"></i><i class="fa fa-star rate"></i><i class="fa fa-star rate"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span><small>(5)</small></label>
+                            </div>
+                            <div class="ps-checkbox">
+                                <input class="form-control" type="checkbox" id="review-4" name="review">
+                                <label for="review-4"><span><i class="fa fa-star rate"></i><i class="fa fa-star rate"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span><small>(5)</small></label>
+                            </div>
+                            <div class="ps-checkbox">
+                                <input class="form-control" type="checkbox" id="review-5" name="review">
+                                <label for="review-5"><span><i class="fa fa-star rate"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span><small>(1)</small></label>
+                            </div>
+                        </figure>
+                        <figure style="display: none;">
+                            <h4 class="widget-title">By Color</h4>
+                            <div class="ps-checkbox ps-checkbox--color color-1 ps-checkbox--inline">
+                                <input class="form-control" type="checkbox" id="color-1" name="size">
+                                <label for="color-1"></label>
+                            </div>
+                            <div class="ps-checkbox ps-checkbox--color color-2 ps-checkbox--inline">
+                                <input class="form-control" type="checkbox" id="color-2" name="size">
+                                <label for="color-2"></label>
+                            </div>
+                            <div class="ps-checkbox ps-checkbox--color color-3 ps-checkbox--inline">
+                                <input class="form-control" type="checkbox" id="color-3" name="size">
+                                <label for="color-3"></label>
+                            </div>
+                            <div class="ps-checkbox ps-checkbox--color color-4 ps-checkbox--inline">
+                                <input class="form-control" type="checkbox" id="color-4" name="size">
+                                <label for="color-4"></label>
+                            </div>
+                            <div class="ps-checkbox ps-checkbox--color color-5 ps-checkbox--inline">
+                                <input class="form-control" type="checkbox" id="color-5" name="size">
+                                <label for="color-5"></label>
+                            </div>
+                            <div class="ps-checkbox ps-checkbox--color color-6 ps-checkbox--inline">
+                                <input class="form-control" type="checkbox" id="color-6" name="size">
+                                <label for="color-6"></label>
+                            </div>
+                            <div class="ps-checkbox ps-checkbox--color color-7 ps-checkbox--inline">
+                                <input class="form-control" type="checkbox" id="color-7" name="size">
+                                <label for="color-7"></label>
+                            </div>
+                            <div class="ps-checkbox ps-checkbox--color color-8 ps-checkbox--inline">
+                                <input class="form-control" type="checkbox" id="color-8" name="size">
+                                <label for="color-8"></label>
+                            </div>
+                        </figure>
+                        <figure class="sizes" style="display: none;">
+                            <h4 class="widget-title">BY SIZE</h4><a href="#">L</a><a href="#">M</a><a href="#">S</a><a href="#">XL</a>
+                        </figure>
+                    </aside>
+                </div>
+                <div class="ps-layout__right" id="updateDiv">
+                    <div class="ps-shopping ps-tab-root">
+                        <div class="ps-shopping__header" >
+                             
+                            <p><strong> {{$allProducts->total()}}</strong> Products found</p>
+                            <div class="ps-shopping__actions">
+                                <select class="ps-select" data-placeholder="Sort Items">
+                                    <option>Sort by latest</option>
+                                    <option>Sort by popularity</option>
+                                    <option>Sort by average rating</option>
+                                    <option>Sort by price: low to high</option>
+                                    <option>Sort by price: high to low</option>
+                                </select>
+                                <div class="ps-shopping__view">
+                                    <p>View</p>
+                                    <ul class="ps-tab-list">
+                                        <li class="active"><a href="#tab-1"><i class="fas fa-th"></i></a></li>
+                                        <li><a href="#tab-2"><i class="fas fa-list-ul"></i></a></li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
-                        <div class="cat-brand">
-                            <div class="sec-title">
-                                <h6>Brands</h6>
-                            </div>
+                        <div class="ps-tabs" >
+
+
+                                <div class="ps-tab active" id="tab-1">
+                                    <div class="ps-shopping-product">
+                                        <div class="row">
+                                            @foreach ($allProducts as $product)
+                                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6 ">
+                                                <div class="ps-product">
+                                                    <div class="ps-product__thumbnail"><a href="{{url('product/'.$product->id)}}"><img src="{{asset('storage/'.$product->cover_img)}}" alt=""></a>
+                                                        <ul class="ps-product__actions">
+                                                            <li><a href="{{route('cart.add', $product->id)}}" data-toggle="tooltip" data-placement="top" title="Add to Cart"><i class="fas fa-shopping-bag"></i></a></li>
+                                                           
+                                                        </ul>
+                                                    </div>
+    
+                                                    
+                                                <div class="ps-product__container"><a class="ps-product__vendor" href=""></a>
+                                                    
+                                                        <div class="ps-product__content"><a class="ps-product__title" href="{{url('product/'.$product->id)}}">{{$product->name}}</a>
+                                                            <p class="ps-product__price"><b>KES {{$product->price}}</b></p>
+                                                        </div>
+                                                    <div class="ps-product__content hover"><a class="ps-product__title" href="{{url('product/'.$product->id)}}">{{$product->name}}</a>
+                                                            <p class="ps-product__price"><b>KES {{$product->price}}</b></p>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+    
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="ps-pagination">
+                                        <ul class="pagination">
+                                            {{$allProducts->links()}}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="ps-tab" id="tab-2">
+                                    <div class="ps-shopping-product">
+                                        @foreach ($allProducts as $product)
+                                            
+                                       
+                                        <div class="ps-product ps-product--wide">
+                                            <div class="ps-product__thumbnail"><a href="{{url('product/'.$product->id)}}"><img src="{{asset('storage/'.$product->cover_img)}}" alt=""></a>
+                                            </div>
+                                            <div class="ps-product__container">
+                                                <div class="ps-product__content"><a class="ps-product__title" href="{{url('product/'.$product->id)}}">{{$product->name}}</a>
+                                                
+                                                    <ul class="ps-product__desc">
+                                                        <li>{{$product->details}}</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="ps-product__shopping">
+                                                    <p class="ps-product__price text-center">KES {{$product->price}}</p><a class="ps-btn" href="{{route('cart.add', $product->id)}}">Add to cart</a>
+                                                    <!--<ul class="ps-product__actions">
+                                                        
+                                                        <li><a href="#"><i class="icon-chart-bars"></i> Compare</a></li>
+                                                    </ul>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    
+                                    
+                                    <div class="ps-pagination">
+                                        <ul class="pagination">
+                                            {{$allProducts->links()}}
+                                        </ul>
+                                    </div>
+                                </div>
+                           
                            
                             
                             
-                            <div class="brand-box">
-                                <?php use App\Product; ?>
-                               <?php $brands = Product::select('brand')->groupBy('brand')->get(); ?>
-
-                                
-                                @foreach ($brands as $brand )
-
-                                    <ul class="list-unstyled">   
-                                        <li><input  id="brand" class="try" value="{{ $brand->brand}}"  class="try" type="checkbox">&nbsp;&nbsp;<span>{{ ucwords($brand->brand) }}</span>({{App\Product::where('brand',$brand->brand)->count()}})</li>  
-                                    </ul>
-
-                                @endforeach
-                                
-                            </div>
-                                
-
-                            
-                        </div>
-                        <div class="price-range">
-                            <div class="sec-title">
-                                <h6>Price</h6>
-                            </div>
-                            <div class="price-filter">
-                                <div>
-                                    <div id="slider-range"></div>
-                                    <b><input size="2" type="text" id="amount_start" name="start_price" value="15" readonly="readonly"></b>
-                                    <b><input size="2" type="text" id="amount_end" name="end_price" value="65" readonly="readonly"></b>  
-                                    <button type="button" name="button">Filter</button>
-                                </div>
-						    </div>
-                        </div>
-
-
-
-                        <div class="color">
-                            <div class="sec-title">
-                                <h6>Color</h6>
-                            </div>
-                            <ul class="list-unstyled color-box">
-                                <li><input type="checkbox" id="red" name="name"><label for="red"><span style="background: red;"></span>Red</label></li>
-                                <li><input type="checkbox" id="green" name="name"><label for="green"><span style="background: green;"></span>Green</label></li>
-                                <li><input type="checkbox" id="blue" name="name"><label for="blue"><span style="background: blue;"></span>Blue</label></li>
-                                <li><input type="checkbox" id="gold" name="name"><label for="gold"><span style="background: gold;"></span>Golden</label></li>
-                                <li><input type="checkbox" id="brown" name="name"><label for="brown"><span style="background: brown;"></span>Brown</label></li>
-                                <li><input type="checkbox" id="black" name="name"><label for="black"><span style="background: black;"></span>Black</label></li>
-                            </ul>
-                        </div>
-                        <div class="pro-tag">
-                            <div class="sec-title">
-                                <h6>Product Tag</h6>
-                            </div>
-                            <div class="tag-box">
-                                <a href="">Shirt</a>
-                                <a href="">Smartphone</a>
-                                <a href="">Camera</a>
-                                <a href="">Pant</a>
-                                <a href="">Glass</a>
-                                <a href="">Smart Led Tv</a>
-                                <a href="">Watch</a>
-                                <a href="">Micro Oven</a>
-                                <a href="">Toy</a>
-                            </div>
-                        </div>
-                        <div class="add-box">
-                            <a href=""><img src="images/s-banner2.jpg" alt="" class="img-fluid"></a>
-                        </div>
-                    </div>
-                    <div class="col-md-9" id="updateDiv">
-                        <div  class="product-box">
-                            <div class="cat-box d-flex justify-content-between">
-                                <!-- Nav tabs -->
-                                <div class="view">
-                                    <ul class="nav nav-tabs" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" data-toggle="tab" href="#grid"><i class="fa fa-th-large"></i></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#list"><i class="fa fa-th-list"></i></a>
-                                        </li>
-                                    </ul>
-                                </div>
-                              
-                                
-                                
-                            </div>
-
-                            <!-- Tab panes -->
-                            <div class="tab-content">
-                                <div class="tab-pane fade show active" id="grid" role="tabpanel">
-                                    <div class="row">
-                                        @foreach ($allProducts as $product)
-                                        <div class="col-lg-4 col-md-6">
-                                            <div class="tab-item">
-                                                <div class="tab-img">
-                                                    
-                                                    <img class="main-img img-fluid" src="{{asset('storage/'.$product->cover_img)}}" alt="">
-                                                    <img class="sec-img img-fluid" src="{{asset('storage/'.$product->cover_img)}}" alt="">
-                                                    <div class="layer-box">
-                                                     
-                                                        <a href="" class="it-comp" data-toggle="tooltip" data-placement="left" title="Compare"><img src="{{ asset('images/it-comp.png') }}" alt=""></a>
-                                                        <a href="" class="it-fav" data-toggle="tooltip" data-placement="left" title="Favourite"><img src="{{ asset('images/it-fav.png') }}" alt=""></a>
-                                                    </div>
-                                                </div>
-                                                <div class="tab-heading">
-                                                    <p><a href="{{url('product/'.$product->id)}}">{{$product->name}}</a></p>
-                                                </div>
-                                                <div class="img-content d-flex justify-content-between">
-                                                    <div>
-                                                        <ul class="list-unstyled list-inline fav">
-                                                            <li class="list-inline-item"><i class="fa fa-star"></i></li>
-                                                            <li class="list-inline-item"><i class="fa fa-star"></i></li>
-                                                            <li class="list-inline-item"><i class="fa fa-star"></i></li>
-                                                            <li class="list-inline-item"><i class="fa fa-star"></i></li>
-                                                            <li class="list-inline-item"><i class="fa fa-star-o"></i></li>
-                                                        </ul>
-                                                        <ul class="list-unstyled list-inline ">
-                                                            <li class="list-inline-item" style="font-size: 16px"><b>KES {{$product->price}}</b></li>
-                                                            
-                                                        </ul>
-                                                    </div>
-                                                    <div>
-                                                        <a href="{{route('cart.add', $product->id)}}" data-toggle="tooltip" data-placement="top" title="Add to Cart"><img src="{{ asset('images/it-cart.png') }}" alt=""></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @endforeach
-
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="list" role="tabpanel">
-                                    <div class="row">
-
-                                        @foreach ($allProducts as $product)
-                                        <div class="col-lg-12 col-md-6">
-                                            <div class="tab-item2">
-                                                <div class="row">
-                                                    <div class="col-lg-4 col-md-12">
-                                                        <div class="tab-img">
-                                                            <img class="main-img img-fluid" src="{{asset('storage/'.$product->cover_img)}}" alt="">
-                                                            <img class="sec-img img-fluid" src="{{asset('storage/'.$product->cover_img)}}" alt="">
-                                                            
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-8 col-md-12">
-                                                        <div class="item-heading d-flex justify-content-between">
-                                                            <div class="item-top">
-                                                                <ul class="list-unstyled list-inline cate">
-                                                                    <li class="list-inline-item"><p>{{$product->name}}</p></li>
-                                                                    
-                                                                </ul>
-                                                                <p><a href="{{url('product/'.$product->id)}}">{{$product->details}}</a></p>
-                                                                <ul class="list-unstyled list-inline fav">
-                                                                    <li class="list-inline-item"><i class="fa fa-star"></i></li>
-                                                                    <li class="list-inline-item"><i class="fa fa-star"></i></li>
-                                                                    <li class="list-inline-item"><i class="fa fa-star"></i></li>
-                                                                    <li class="list-inline-item"><i class="fa fa-star"></i></li>
-                                                                    <li class="list-inline-item"><i class="fa fa-star-o"></i></li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="item-price">
-                                                                <ul class="list-unstyled list-inline">
-                                                                    <li class="list-inline-item" style="font-size: 16px"><b>KES {{$product->price}}</b></li>  
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                        <div class="item-content">
-                                                            <p></p>
-                                                            <a href="{{route('cart.add', $product->id)}}" data-toggle="tooltip" data-placement="top" title="Add to Cart"><img src="{{ asset('images/it-cart.png') }}" alt=""></a>
-                                                            <a href="" class="it-fav" data-toggle="tooltip" data-placement="top" title="Favourite"><img src="{{ asset('images/it-fav.png') }}" alt=""></a>
-                                                            <a href="" class="it-comp" data-toggle="tooltip" data-placement="top" title="Compare"><img src="{{ asset('images/it-comp.png') }}" alt=""></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @endforeach
-
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="pagination-box text-center">
-                                <ul class="list-unstyled list-inline">
-                                    
-                                    {{ $allProducts->links() }}
-                                </ul>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-        <!-- End Category Area -->
+        </div>
+    </div>
 
 
 
-        <!-- Brand area 2 -->
-        <section class="brand2">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="tp-bnd owl-carousel">
-                            <div class="bnd-items">
-                                <a href="#"><img src="{{ asset('images/brand-01.png') }}" alt="" class="img-fluid"></a>
-                            </div>
-                            <div class="bnd-items">
-                                <a href="#"><img src="{{ asset('images/brand-02.png') }}" alt="" class="img-fluid"></a>
-                            </div>
-                            <div class="bnd-items">
-                                <a href="#"><img src="{{ asset('images/brand-03.png') }}" alt="" class="img-fluid"></a>
-                            </div>
-                            <div class="bnd-items">
-                                <a href="#"><img src="{{ asset('images/brand-04.png') }}" alt="" class="img-fluid"></a>
-                            </div>
-                            <div class="bnd-items">
-                                <a href="#"><img src="{{ asset('images/brand-05.png') }}" alt="" class="img-fluid"></a>
-                            </div>
-                            <div class="bnd-items">
-                                <a href="#"><img src="{{ asset('images/brand-06.png') }}" alt="" class="img-fluid"></a>
-                            </div>
-                            <div class="bnd-items">
-                                <a href="#"><img src="{{ asset('images/brand-07.png') }}" alt="" class="img-fluid"></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- End Brand area 2 -->
+ 
+    
+    
 
-@endsection
+    @endsection

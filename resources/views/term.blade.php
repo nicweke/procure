@@ -19,6 +19,9 @@
 
 
     <div class="main">
+        <div style="margin-left:40%;padding-bottom:40px;">
+        <a href="{{route('home')}}"><img src="{{ asset('images/new/emaillogo.png')}}" alt="logo"></a>
+        </div>
 
         <!-- Terms of Service-->
         <section class="signup">

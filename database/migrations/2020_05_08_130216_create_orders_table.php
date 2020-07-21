@@ -41,6 +41,7 @@ class CreateOrdersTable extends Migration
             $table->string('billing_county');
             $table->string('billing_zipcode');
             $table->string('billing_phone');
+            $table->string('cname');
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 

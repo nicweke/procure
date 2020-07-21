@@ -86,10 +86,28 @@
     '900' => $fontDir . '/source-sans-pro-900_d5c4039ece18917b2e9c878bd4f61b3f',
   ),
   'font awesome 5 brands' => array(
-    'normal' => $fontDir . '/font-awesome-5-brands-normal_9b9abb389678c11a67524e0f0b47141f',
+    'normal' => $fontDir . '/font-awesome-5-brands-normal_f4a4a9447985cb1910b69dbf0f0d7b61',
   ),
   'font awesome 5 free' => array(
-    'normal' => $fontDir . '/font-awesome-5-free-normal_6ca3a1e532727169d4bb90a7dbd43a1f',
-    '900' => $fontDir . '/font-awesome-5-free-900_f2deffc75147b5047383c4ae610ae1ad',
+    'normal' => $fontDir . '/font-awesome-5-free-normal_c275339c05c95773907749b24884139c',
+    '900' => $fontDir . '/font-awesome-5-free-900_8ff56b27c16f383a8ecea805982abc49',
+  ),
+  'poppins' => array(
+    '100' => $fontDir . '/poppins-100_561eceebd649a65d1ccc55bc682edf12',
+    '200' => $fontDir . '/poppins-200_b2109dd5de087bd435b9f8ed89f19b52',
+    '300' => $fontDir . '/poppins-300_5ede136950bbaadcad6ff55520449d10',
+    'normal' => $fontDir . '/poppins-normal_80ae6e9e699d5e8597c6c0e47f0f703a',
+    '500' => $fontDir . '/poppins-500_2da22e6c2e0f022b484da65536f67ae1',
+    '600' => $fontDir . '/poppins-600_807dbf7c3a65547d000cd2ba47289c1e',
+    'bold' => $fontDir . '/poppins-bold_2c9bca780e17bdd6ff9f14cbea4f600c',
+    '800' => $fontDir . '/poppins-800_8bf7f931b6ef568af126b7b4dbf1434e',
+    '900' => $fontDir . '/poppins-900_e74796abd27b11fff4443a1e46a187e1',
+  ),
+  'bree serif' => array(
+    'normal' => $fontDir . '/bree-serif-normal_0424375025a2d61defa1a698e5ec494b',
+  ),
+  'roboto' => array(
+    'normal' => $fontDir . '/roboto-normal_cf99a9d56c411ce3fa8a2fc49c520e74',
+    'bold' => $fontDir . '/roboto-bold_1e996688829091a02d8ce32f4ce56696',
   ),
 ) ?>

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Banner;
 
 class BannersController extends Controller
 {
-    public function addBanner(Request $request)
+    public function addBanner()
     {
-        return ('admin.banners.add_banner');
+        $banners = Banner::get();
+        return view('home', compact('banners'));
     }
 }

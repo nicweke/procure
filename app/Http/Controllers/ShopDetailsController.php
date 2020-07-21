@@ -12,10 +12,10 @@ class ShopDetailsController extends Controller
 
         $shop = Shop::where('id', $id)->first();
 
-        $shopProducts = $shop->products()->get();
+        $shopProducts = $shop->products()->paginate(20);
 
         if ($shopProducts) {
-            return view('shops.detail', ['shopProducts' => $shopProducts]);
+            return view('shops.detail', ['shopProducts' => $shopProducts, 'shop' => $shop]);
 
         }
 

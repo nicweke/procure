@@ -2,137 +2,211 @@
 
 namespace App\Http\Controllers;
 
-use App\MpesaTransaction;
-use Carbon\Carbon;
+use App\Payment;
+use App\Set;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Redirect;
+use Osen\Mpesa\C2B;
+use Osen\Mpesa\STK;
 
 class MpesaController extends Controller
 {
     /**
-     * Lipa na M-PESA password
-     * */
-    public function lipaNaMpesaPassword()
+     * Create a new MpesaController instance. We also configure the M-PESA APIs here so they are available for the controller methods.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        $lipa_time = Carbon::rawParse('now')->format('YmdHms');
-        $passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
-        $BusinessShortCode = 174379;
-        $timestamp = $lipa_time;
-        $lipa_na_mpesa_password = base64_encode($BusinessShortCode . $passkey . $timestamp);
-        return $lipa_na_mpesa_password;
-    }
-    /**
-     * Lipa na M-PESA STK Push method
-     * */
-    public function customerMpesaSTKPush()
-    {
-        $url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Authorization:Bearer ' . $this->generateAccessToken()));
-        $curl_post_data = [
-            //Fill in the request parameters with valid values
-            'BusinessShortCode' => 174379,
-            'Password' => $this->lipaNaMpesaPassword(),
-            'Timestamp' => Carbon::rawParse('now')->format('YmdHms'),
-            'TransactionType' => 'CustomerPayBillOnline',
-            'Amount' => 5,
-            'PartyA' => 254705914174, // replace this with your phone number
-            'PartyB' => 174379,
-            'PhoneNumber' => 254705914174, // replace this with your phone number
-            'CallBackURL' => 'https://blog.hlab.tech/',
-            'AccountReference' => "H-lab tutorial",
-            'TransactionDesc' => "Testing stk push on sandbox",
-        ];
-        $data_string = json_encode($curl_post_data);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
-        $curl_response = curl_exec($curl);
-        return $curl_response;
+        STK::init(
+            array(
+                'env' => Set::mpesa('env', 'sandbox'),
+                'type' => Set::mpesa('type', 4),
+                'shortcode' => Set::mpesa('shortcode', '174379'),
+                'key' => Set::mpesa('key', 'JtCsKNEyVmyHmVmfshtP1ki77hdGTKhk'),
+                'secret' => Set::mpesa('secret', 'GzONqxAJcX3uSlO6'),
+                'passkey' => Set::mpesa('passkey', 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'),
+                'validation_url' => url('mpesa/validate'),
+                'confirmation_url' => url('mpesa/confirm'),
+                'callback_url' => url('mpesa/reconcile'),
+                'results_url' => url('mpesa/results'),
+                'timeout_url' => url('mpesa/timeout'),
+            )
+        );
+
+        C2B::init(
+            array(
+                'env' => Set::mpesa('env', 'sandbox'),
+                'type' => Set::mpesa('type', 4),
+                'shortcode' => Set::mpesa('shortcode', '174379'),
+                'key' => Set::mpesa('key', 'JtCsKNEyVmyHmVmfshtP1ki77hdGTKhk'),
+                'secret' => Set::mpesa('secret', 'GzONqxAJcX3uSlO6'),
+                'username' => Set::mpesa('username', 'nicwek'),
+                'passkey' => Set::mpesa('passkey', 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'),
+                'validation_url' => url('mpesa/validate'),
+                'confirmation_url' => url('mpesa/confirm'),
+                'callback_url' => url('mpesa/reconcile'),
+                'timeout_url' => url('mpesa/timeout'),
+                'response_url' => url('mpesa/response'),
+            )
+        );
     }
 
-    public function generateAccessToken()
-    {
-        $consumer_key = "JtCsKNEyVmyHmVmfshtP1ki77hdGTKhk";
-        $consumer_secret = "GzONqxAJcX3uSlO6";
-        $credentials = base64_encode($consumer_key . ":" . $consumer_secret);
-        $url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array("Authorization: Basic " . $credentials));
-        curl_setopt($curl, CURLOPT_HEADER, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $curl_response = curl_exec($curl);
-        $access_token = json_decode($curl_response);
-        return $access_token->access_token;
-    }
     /**
-     * J-son Response to M-pesa API feedback - Success or Failure
+     * Send a request to payment gateway for processing
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Support\Facades\Redirect;
      */
-    public function createValidationResponse($result_code, $result_description)
+    public function pay(Request $request)
     {
-        $result = json_encode(["ResultCode" => $result_code, "ResultDesc" => $result_description]);
-        $response = new Response();
-        $response->headers->set("Content-Type", "application/json; charset=utf-8");
-        $response->setContent($result);
-        return $response;
+        $data = $request->all();
+
+        try {
+            $response = STK::send($request->input('phone'), $request->input('amount'), $request->input('account'));
+
+            if (!$response) {
+                toast(ucwords(__('could not connect to daraja')), 'error');
+                return Redirect::back();
+            } elseif (isset($response['errorCode'])) {
+                toast(ucwords(__("{$response['errorCode']}: {$response['errorMessage']}")), 'error');
+                return Redirect::back();
+            } else {
+                $data['request'] = $response['MerchantRequestID'];
+                $data['status'] = 0;
+
+                $payment = Payment::create($data);
+
+                if ($payment) {
+                    toast(ucwords(__('check your phone to complete payment')), 'success');
+                } else {
+                    toast(ucwords(__('failed to create record')), 'error');
+                }
+
+                return Redirect::back();
+            }
+        } catch (\Exception $e) {
+            toast(ucwords(__($e->getMessage())), 'error');
+            return Redirect::back();
+        }
     }
-    /**
-     *  M-pesa Validation Method
-     * Safaricom will only call your validation if you have requested by writing an official letter to them
-     */
-    public function mpesaValidation(Request $request)
+
+    public function reconcile(Request $request)
     {
-        $result_code = "0";
-        $result_description = "Accepted validation request.";
-        return $this->createValidationResponse($result_code, $result_description);
+        return STK::reconcile(
+            function ($response) {
+                $resultCode = $response['stkCallback']['ResultCode'];
+                $resultDesc = $response['stkCallback']['ResultDesc'];
+                $merchantRequestID = $response['stkCallback']['MerchantRequestID'];
+
+                $payment = Payment::whereRequest($merchantRequestID)->first();
+
+                if (isset($response['stkCallback']['CallbackMetadata'])) {
+                    $CallbackMetadata = $response['stkCallback']['CallbackMetadata']['Item'];
+
+                    $amount = $CallbackMetadata[0]['Value'];
+                    $mpesaReceiptNumber = $CallbackMetadata[1]['Value'];
+                    $balance = $CallbackMetadata[2]['Value'];
+                    $transactionDate = $CallbackMetadata[3]['Value'];
+                    $phone = $CallbackMetadata[4]['Value'];
+
+                    $payment->status = 1;
+                    $payment->amount = $amount;
+                    $payment->receipt = $mpesaReceiptNumber;
+
+                    return true;
+                } else {
+                    $payment->status = 'Pending';
+                }
+
+                if ($payment->save()) {
+                    toast(ucwords(__('failed to send sms')), 'error');
+
+                    return true;
+                }
+
+                return true;
+            }
+        );
     }
-    /**
-     * M-pesa Transaction confirmation method, we save the transaction in our databases
-     */
-    public function mpesaConfirmation(Request $request)
+
+    public function register(Request $request)
     {
-        $content = json_decode($request->getContent());
-        $mpesa_transaction = new MpesaTransaction();
-        $mpesa_transaction->TransactionType = $content->TransactionType;
-        $mpesa_transaction->TransID = $content->TransID;
-        $mpesa_transaction->TransTime = $content->TransTime;
-        $mpesa_transaction->TransAmount = $content->TransAmount;
-        $mpesa_transaction->BusinessShortCode = $content->BusinessShortCode;
-        $mpesa_transaction->BillRefNumber = $content->BillRefNumber;
-        $mpesa_transaction->InvoiceNumber = $content->InvoiceNumber;
-        $mpesa_transaction->OrgAccountBalance = $content->OrgAccountBalance;
-        $mpesa_transaction->ThirdPartyTransID = $content->ThirdPartyTransID;
-        $mpesa_transaction->MSISDN = $content->MSISDN;
-        $mpesa_transaction->FirstName = $content->FirstName;
-        $mpesa_transaction->MiddleName = $content->MiddleName;
-        $mpesa_transaction->LastName = $content->LastName;
-        $mpesa_transaction->save();
-        // Responding to the confirmation request
-        $response = new Response();
-        $response->headers->set("Content-Type", "text/xml; charset=utf-8");
-        $response->setContent(json_encode(["C2BPaymentConfirmationResult" => "Success"]));
-        return $response;
+        return C2B::register();
     }
-    /**
-     * M-pesa Register Validation and Confirmation method
-     */
-    public function mpesaRegisterUrls()
+
+    public function validation(Request $request)
     {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, 'https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl');
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Authorization: Bearer ' . $this->generateAccessToken()));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode(array(
-            'ShortCode' => "600141",
-            'ResponseType' => 'Completed',
-            'ConfirmationURL' => "https://blog.hlab.tech/api/v1/hlab/transaction/confirmation",
-            'ValidationURL' => "https://blog.hlab.tech/api/v1/hlab/validation",
-        )));
-        $curl_response = curl_exec($curl);
-        echo $curl_response;
+        return C2B::validate(
+            function ($response) {
+                return true;
+            }
+        );
+    }
+
+    public function status(Request $request)
+    {
+        return C2B::status(
+            function ($response) {
+                return true;
+            }
+        );
+    }
+
+    public function balance(Request $request)
+    {
+        return C2B::balance(
+            function ($response) {
+                return true;
+            }
+        );
+    }
+
+    public function confirmation(Request $request)
+    {
+        return C2B::confirm(
+            function ($response) {
+                $TransactionType = $response['TransactionType'];
+                $TransID = $response['TransID'];
+                $TransTime = $response['TransTime'];
+                $TransAmount = $response['TransAmount'];
+                $BusinessShortCode = $response['BusinessShortCode'];
+                $BillrequestNumber = $response['BillrequestNumber'];
+                $InvoiceNumber = $response['InvoiceNumber'];
+                $OrgAccountBalance = $response['OrgAccountBalance'];
+                $ThirdPartyTransID = $response['ThirdPartyTransID'];
+                $MSISDN = $response['MSISDN'];
+                $FirstName = $response['FirstName'];
+                $MiddleName = $response['MiddleName'];
+                $LastName = $response['LastName'];
+
+                $customer = "{$FirstName} {$MiddleName} {$LastName}";
+
+                $payment = Payment::whereRequest($BillrequestNumber)->first();
+                //->whereBetween('created_at', '<', Carbon::now()->subMinute()->toDateTimeString())
+
+                $payment->receipt = $TransID;
+
+                return $payment->save() ? true : false;
+            }
+        );
+    }
+
+    public function results(Request $request)
+    {
+        return STK::results(
+            function ($response) {
+                return true;
+            }
+        );
+    }
+
+    public function timeout(Request $request)
+    {
+        return STK::timeout(
+            function ($response) {
+                return true;
+            }
+        );
     }
 }

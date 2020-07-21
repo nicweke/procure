@@ -16,7 +16,7 @@ class CartController extends Controller
         // add the product to cart
         \Cart::session(auth()->id())->add(array(
             'id' => $product->id,
-            // 'img' => $product->cover_img,
+            //'img' => $product->cover_img,
             'name' => $product->name,
             'price' => $product->price,
             'quantity' => 1,
@@ -29,28 +29,28 @@ class CartController extends Controller
 
     public function index()
     {
-        $VAT = new \Darryldecode\Cart\CartCondition(array(
-            'name' => 'VAT',
-            'type' => 'tax',
-            'target' => 'total', // this condition will be applied to cart's subtotal when getSubTotal() is called.
-            'value' => '14.0%',
-            'order' => 2,
+        /* $VAT = new \Darryldecode\Cart\CartCondition(array(
+        'name' => 'VAT',
+        'type' => 'tax',
+        'target' => 'total', // this condition will be applied to cart's subtotal when getSubTotal() is called.
+        'value' => '14.0%',
+        'order' => 2,
 
         ));
         $shipping = new \Darryldecode\Cart\CartCondition(array(
-            'name' => 'Shipping Charges',
-            'type' => 'shipping',
-            'target' => 'total', // this condition will be applied to cart's subtotal when getSubTotal() is called.
-            'value' => '+150',
-            'order' => 1,
+        'name' => 'Shipping Charges',
+        'type' => 'shipping',
+        'target' => 'total', // this condition will be applied to cart's subtotal when getSubTotal() is called.
+        'value' => '+150',
+        'order' => 1,
 
-        ));
+        ));*/
 
         $cartItems = \Cart::session(auth()->id())->getContent();
         view()->share('cartItems', $cartItems);
 
-        \Cart::session(auth()->id())->condition($VAT);
-        \Cart::session(auth()->id())->condition($shipping);
+        // \Cart::session(auth()->id())->condition($VAT);
+        //\Cart::session(auth()->id())->condition($shipping);
 
         return view('cart.index', compact('cartItems'));
     }
@@ -102,29 +102,29 @@ class CartController extends Controller
         return back()->withMessage('Coupon Applied');
     }
 
-    public function applyTax()
-    {
-        $VAT = new \Darryldecode\Cart\CartCondition(array(
-            'name' => 'VAT',
-            'type' => 'tax',
-            'target' => 'total', // this condition will be applied to cart's subtotal when getSubTotal() is called.
-            'value' => '14.0%',
-            'order' => 2,
+    /* public function applyTax()
+{
+$VAT = new \Darryldecode\Cart\CartCondition(array(
+'name' => 'VAT',
+'type' => 'tax',
+'target' => 'total', // this condition will be applied to cart's subtotal when getSubTotal() is called.
+'value' => '14.0%',
+'order' => 2,
 
-        ));
-        $shipping = new \Darryldecode\Cart\CartCondition(array(
-            'name' => 'Shipping Charges',
-            'type' => 'shipping',
-            'target' => 'total', // this condition will be applied to cart's subtotal when getSubTotal() is called.
-            'value' => '+150',
-            'order' => 1,
+));
+$shipping = new \Darryldecode\Cart\CartCondition(array(
+'name' => 'Shipping Charges',
+'type' => 'shipping',
+'target' => 'total', // this condition will be applied to cart's subtotal when getSubTotal() is called.
+'value' => '+150',
+'order' => 1,
 
-        ));
-        \Cart::session(auth()->id())->condition($VAT);
-        \Cart::session(auth()->id())->condition($shipping);
+));
+\Cart::session(auth()->id())->condition($VAT);
+\Cart::session(auth()->id())->condition($shipping);
 
-        return back();
+return back();
 
-    }
+}*/
 
 }

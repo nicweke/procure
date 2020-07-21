@@ -1,5 +1,8 @@
 
 @extends('layouts.front')
+<link rel="stylesheet" href="{{ asset('css/parsley.css') }}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{{ asset('/js/parsley.min.js')}}"></script>
 
 
 
@@ -1878,23 +1881,24 @@ p {
 
     
 
-    <form action="{{route('shops.store')}}" method="POST" enctype="multipart/form-data" class="ml-2">
+    <form action="{{route('shops.store')}}" method="POST" enctype="multipart/form-data" class="ml-2" data-parsley-validate>
     @csrf
      
     <h2 style="text-align: center">Shop Details</h2>
     
     <div class="col-md-12 py-5">
-        <h4>Personal Information</h4>
-        <div class="col-md-4">
+        <h4 class="mb-3">Personal Information</h4>
+        <div class="col-md-4 mb-3">
             <label for="ownername">Owners Name*</label>
             <input type="text" name="ownername"  id="ownername" class="form-control" placeholder="" aria-describedby="helpId" required>
+            <small>*Enter your First and Last Names</small>
             @error('ownername')
           <span class="invalid-feedback" role="alert">
               <strong>{{ $message }}</strong>
           </span>
            @enderror
         </div>
-        <div class="col-md-4" style="">
+        <div class="col-md-4 mb-3">
             <label for="email">Shop Email Address*</label>
             <input type="email" name="email" id="email" class="form-control" placeholder="" aria-describedby="helpId" required>
             @error('email')
@@ -1903,9 +1907,9 @@ p {
           </span>
            @enderror
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
             <label for="tel">Telephone/Mobile Number*</label>
-            <input type="tel" name="tel" id="tel" class="form-control" placeholder="" aria-describedby="helpId" required>
+            <input type="tel" name="tel" id="tel" class="form-control" placeholder="+254712345678" aria-describedby="helpId" required>
             @error('tel')
           <span class="invalid-feedback" role="alert">
               <strong>{{ $message }}</strong>
@@ -1916,7 +1920,7 @@ p {
     </div>
     <div class="col-md-12 py-4">   
         <h4>Shop Information</h4>
-      <div class="form-group mt-4">
+      <div class="form-group mt-4 mb-3">
           <label for="cover_img">Upload company logo</label>
           <div class="col-md-12">
           <input type="file" class="form-control-file" name="cover_img" required>
@@ -1928,7 +1932,7 @@ p {
            @enderror
           </div>
         </div> 
-      <div class="form-group mt-4">
+      <div class="form-group mt-4 mb-3">
           <label for="license">Upload Trade License</label>
           <div class="col-md-12">
           <input type="file" class="form-control-file" name="license" required>
@@ -1939,7 +1943,7 @@ p {
            @enderror
           </div>
         </div> 
-      <div class="form-group mt-4">
+      <div class="form-group mt-4 mb-3">
           <label for="cert">Upload Certificate of Incorporation/Registration</label>
           <div class="col-md-12">
           <input type="file" class="form-control-file" name="cert" required>
@@ -1952,7 +1956,7 @@ p {
         </div> 
 
 
-        <div class="form-group mt-4">
+        <div class="form-group mt-4 mb-3">
             <label for="name">Company/Shop Name*</label>
             <div class="col-md-12">
             <input type="text" name="name" id="" class="form-control" placeholder="" aria-describedby="helpId" required>
@@ -1966,10 +1970,10 @@ p {
    
 
 
-        <div class="form-group mt-2">
+        <div class="form-group mt-2 mb-3">
             <label for="description">Describe Your Business</label>
             <div class="col-md-12">
-            <textarea class="form-control" name="description" id="" rows="3" required></textarea> 
+            <textarea class="form-control" name="description" id="" rows="3" maxlength="255" required></textarea> 
             @error('description')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -1978,7 +1982,7 @@ p {
             </div>
         </div>
 
-        <div class="form-group mt-2">
+        <div class="form-group mt-2 mb-3">
             <label for="specialization">Area Of Specialization</label>
             <div class="col-md-12">
             <input type="text" name="specialization" id="" class="form-control" placeholder="" aria-describedby="helpId" required>
@@ -1988,28 +1992,28 @@ p {
 
     </div>
 
-    <div class="col-md-12">
+    <div class="col-md-12 mb-3">
         <h4 class="py-4">Seller Settlement Information</h4>
 
-        <div class="form-group mt-2">
+        <div class="form-group mt-2 mb-3">
             <label for="account_name">Bank Account Name*</label>
             <div class="col-md-12">
             <input type="text" name="account_name" id="account_name" class="form-control" placeholder="" aria-describedby="helpId" required>
             </div>
         </div>
-        <div class="form-group mt-2">
+        <div class="form-group mt-2 mb-3">
             <label for="account_number">Bank Account Number*</label>
             <div class="col-md-12">
             <input type="number" name="account_number" id="account_number" class="form-control" placeholder="" aria-describedby="helpId" required>
             </div>
         </div>
-        <div class="form-group mt-2">
+        <div class="form-group mt-2 mb-3">
             <label for="bank_name">Bank Name*</label>
             <div class="col-md-12">
             <input type="text" name="bank_name" id="bank_name" class="form-control" placeholder="" aria-describedby="helpId" required>
             </div>
         </div>
-        <div class="form-group mt-2">
+        <div class="form-group mt-2 mb-3">
             <label for="branch_name">Bank Branch Name*</label>
             <div class="col-md-12">
             <input type="text" name="branch_name" id="branch_name" class="form-control" placeholder="" aria-describedby="helpId" required>
@@ -2020,7 +2024,7 @@ p {
 
 
       
-        <button type="submit" class="btn btn-primary btn-block mt-5 mb-5" style="font: 20px">Create Shop</button>
+        <button type="submit" class="btn btn-primary btn-lg btn-block mt-5 mb-5" style="font: 20px">Create Shop</button>
 
 
 
@@ -2032,4 +2036,7 @@ p {
 </div>
 
 </div>
+
+<script src="{{ asset('/js/parsley.min.js')}}"></script>
+
 @endsection

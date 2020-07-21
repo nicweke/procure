@@ -33,9 +33,6 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('shops.create') }}">{{ __('Open Your Shop') }}</a>
-                        </li>
 
                     </ul>
 
@@ -74,23 +71,12 @@
                 </div>
             </div>
         </nav>
-        {{--Display Success Message--}}
-        @if(session()->has('message'))
-        <div class="alert alert-success text-center" role="alert">
-           {{session('message')}}
-        </div>
-    @endif
 
-    {{-- display error message --}}
-
-    @if(session()->has('error'))
-    <div class="alert alert-danger text-center" role="alert">
-        {{session('error')}}
-    </div>
-    @endif
         <main class="py-4">
             @yield('content')
         </main>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.2/js/star-rating.min.js"></script>
 </body>
 </html>

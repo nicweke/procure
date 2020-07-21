@@ -2,53 +2,138 @@
 
 namespace App\Http\Controllers;
 
-use App\Checkout;
+use App\Order;
+use App\Payment;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
-    private $secret;
-    private $IV;
-
-    public function __construct($secret, $IV)
+    public $columns = array();
+    public $fields = array();
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        $this->secret = $secret;
-        $this->IV = $IV;
+        //$this->middleware('auth');
+        $model = new Payment;
+        $columns = $model->getFillable();
+        $this->fields = $columns;
+        $columns = array_diff($columns, []);
+        $this->columns = $columns;
     }
 
-    public function encrypt($requestBody)
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
     {
-        $secret = hash('sha256', $this->secret);
-        $IV = substr(hash('sha256', $this->IV), 0, 16);
+        $db = DB::table('payments');
 
-        $payload = json_encode($requestBody);
-        $result = openssl_encrypt(
-            $payload,
-            'AES-256-CBC',
-            $secret,
-            0,
-            $IV
-        );
+        if (empty($request->query())) {
+            $payments = Payment::all();
+        } else {
+            foreach ($request->query() as $key => $val) {
+                $db->where($key, $val);
+            }
 
-        return base64_encode($result);
+            $payments = $db->get();
 
-        // Get the body of the post request made
-        // after the customer clicked the checkout button
-        $checkoutRequestBody = file_get_contents('php://input');
+            $this->columns = array_diff($this->columns, [$key]);
+        }
 
-        // The Request body is read into a string,
-        // so we decode the JSON string into a PHP associative array
-        $checkoutPayload = json_decode($checkoutRequestBody);
-
-        $checkout = new Checkout(
-            '2BfjH469WxmcJdPM',
-            'QpJXdbYv6tHLhCTK'
-        );
-
-        $params = $checkout->encrypt($checkoutPayload);
-
-        header('Content-Type: application/json');
-        echo json_encode(array("params" => $params));
-
+        return view('table')->with('records', $payments)->with('columns', $this->columns);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        $payment = null;
+        $method = $request->input('method', 'mpesastk');
+
+        $orders = Order::where('user_id', Auth::user()->id)->latest()->first();
+
+        //$account = $request->input('account', \rand(100000, 999999));
+        $account = DB::Table('orders')->select('order_number')->where('user_id', Auth::user()->id)->latest()->first();
+        $amount = $request->input('amount', 10);
+
+        if ($method == 'mpesac2b') {
+            $data = array(
+                'account' => $account,
+                'request' => $account,
+                'status' => 0,
+                'amount' => $amount,
+                'method' => 'mpesac2b',
+            );
+
+            $payment = Payment::create($data);
+        }
+        return view('create')->with('method', $method)->with('payment', $payment)->with('orders', $orders);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        return Payment::create($request->all());
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Payment  $payment
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Payment $payment)
+    {
+        return view('payment')->with('payment', $payment);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Payment  $payment
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Payment $payment)
+    {
+        return view('edit')->with('payment', $payment);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Payment  $payment
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Payment $payment)
+    {
+        return $payment->update($request->all());
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Payment  $payment
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Payment $payment)
+    {
+        return $payment->delete($request->all());
+    }
 }
